@@ -1,6 +1,6 @@
 {
-    "name": "poc/order-state-machine",
-    "description": "POC evaluating tlab/state-machine for order processing",
+    "name": "tuxonice/state-machine-playground",
+    "description": "Playground for experimenting with the tuxonice/state-machine library: order and lead workflows with CLI and web UI",
     "type": "project",
     "repositories": [
         {

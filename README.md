@@ -1,4 +1,4 @@
-# State Machine POC
+# State Machine Playground
 
 A proof-of-concept evaluating the [tuxonice/state-machine](https://github.com/tuxonice/state-machine) PHP library for stateful workflows. Includes two configs: an order processing pipeline and a real estate lead management workflow.
 
