@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Poc\OrderStateMachine\Tests\Unit;
+namespace Tlab\StatemachinePlayground\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Poc\OrderStateMachine\Commands\LogTransitionCommand;
+use Tlab\StatemachinePlayground\Commands\LogTransitionCommand;
 
 class CommandsTest extends TestCase
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Poc\OrderStateMachine\Commands;
+namespace Tlab\StatemachinePlayground\Commands;
 
 use Tlab\StateMachine\Commands\CommandInterface;
 

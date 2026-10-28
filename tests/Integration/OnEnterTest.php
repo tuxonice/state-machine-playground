@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Poc\OrderStateMachine\Tests\Integration;
+namespace Tlab\StatemachinePlayground\Tests\Integration;
 
 use PHPUnit\Framework\TestCase;
-use Poc\OrderStateMachine\Bootstrap;
-use Poc\OrderStateMachine\Entity\Order;
-use Poc\OrderStateMachine\EventListener\TransitionLogger;
+use Tlab\StatemachinePlayground\Bootstrap;
+use Tlab\StatemachinePlayground\Entity\Order;
+use Tlab\StatemachinePlayground\EventListener\TransitionLogger;
 
 class OnEnterTest extends TestCase
 {
@@ -97,7 +97,7 @@ class OnEnterTest extends TestCase
 
     public function testAutoProcessWithNotifications(): void
     {
-        $notifier = new \Poc\OrderStateMachine\EventListener\NotificationSimulator();
+        $notifier = new \Tlab\StatemachinePlayground\EventListener\NotificationSimulator();
         $runner = Bootstrap::createRunner(notificationSimulator: $notifier);
 
         $order = new Order('ORD-AE06');

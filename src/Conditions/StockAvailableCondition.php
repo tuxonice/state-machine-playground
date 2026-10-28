@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Poc\OrderStateMachine\Conditions;
+namespace Tlab\StatemachinePlayground\Conditions;
 
 use Tlab\StateMachine\Conditions\ConditionInterface;
 

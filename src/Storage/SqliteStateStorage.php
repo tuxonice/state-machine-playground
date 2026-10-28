@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Poc\OrderStateMachine\Storage;
+namespace Tlab\StatemachinePlayground\Storage;
 
 use PDO;
-use Poc\OrderStateMachine\Entity\Order;
+use Tlab\StatemachinePlayground\Entity\Order;
 use Tlab\StateMachine\Storage\StateStorageInterface;
 
 class SqliteStateStorage implements StateStorageInterface

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Poc\OrderStateMachine\Storage;
+namespace Tlab\StatemachinePlayground\Storage;
 
 use DateTimeImmutable;
 use PDO;
-use Poc\OrderStateMachine\Entity\Order;
+use Tlab\StatemachinePlayground\Entity\Order;
 use Tlab\StateMachine\Scheduler\ScheduledTimeout;
 use Tlab\StateMachine\Scheduler\TimeoutScheduler;
 

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Poc\OrderStateMachine;
+namespace Tlab\StatemachinePlayground;
 
-use Poc\OrderStateMachine\EventDispatcher\OrderEventDispatcher;
-use Poc\OrderStateMachine\EventListener\NotificationSimulator;
-use Poc\OrderStateMachine\EventListener\TransitionLogger;
+use Tlab\StatemachinePlayground\EventDispatcher\OrderEventDispatcher;
+use Tlab\StatemachinePlayground\EventListener\NotificationSimulator;
+use Tlab\StatemachinePlayground\EventListener\TransitionLogger;
 use Tlab\StateMachine\Reader\DefinitionReader;
 use Tlab\StateMachine\Scheduler\TimeoutScheduler;
 use Tlab\StateMachine\StateMachineRunner;

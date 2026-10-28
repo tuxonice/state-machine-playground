@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-A PHP 8.2 proof-of-concept evaluating the external `tuxonice/state-machine` library (namespace `Tlab\StateMachine`, installed from VCS `dev-main`). State machines are defined in JSON; the PHP here is thin glue (storage, listeners, guards, commands) plus a CLI demo and a single-file web UI. Project namespace: `Poc\OrderStateMachine\` → `src/`.
+A PHP 8.2 proof-of-concept evaluating the external `tuxonice/state-machine` library (namespace `Tlab\StateMachine`, installed from VCS `dev-main`). State machines are defined in JSON; the PHP here is thin glue (storage, listeners, guards, commands) plus a CLI demo and a single-file web UI. Project namespace: `Tlab\StatemachinePlayground\` → `src/`.
 
 ## Commands
 

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Poc\OrderStateMachine\Tests\Unit;
+namespace Tlab\StatemachinePlayground\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Poc\OrderStateMachine\Entity\Order;
+use Tlab\StatemachinePlayground\Entity\Order;
 use Tlab\StateMachine\Storage\StatefulInterface;
 
 class OrderTest extends TestCase

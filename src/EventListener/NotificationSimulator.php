@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Poc\OrderStateMachine\EventListener;
+namespace Tlab\StatemachinePlayground\EventListener;
 
 use Tlab\StateMachine\Events\AfterTransition;
 

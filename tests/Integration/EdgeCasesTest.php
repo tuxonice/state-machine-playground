@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Poc\OrderStateMachine\Tests\Integration;
+namespace Tlab\StatemachinePlayground\Tests\Integration;
 
 use PHPUnit\Framework\TestCase;
-use Poc\OrderStateMachine\Bootstrap;
+use Tlab\StatemachinePlayground\Bootstrap;
 use Tlab\StateMachine\Exceptions\UnknownEventException;
 use Tlab\StateMachine\TransitionStatus;
 

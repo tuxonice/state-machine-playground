@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Poc\OrderStateMachine\Tests\Unit;
+namespace Tlab\StatemachinePlayground\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Poc\OrderStateMachine\Conditions\OrderNotShippedCondition;
-use Poc\OrderStateMachine\Conditions\HasPaymentDataCondition;
+use Tlab\StatemachinePlayground\Conditions\OrderNotShippedCondition;
+use Tlab\StatemachinePlayground\Conditions\HasPaymentDataCondition;
 
 class ConditionsTest extends TestCase
 {

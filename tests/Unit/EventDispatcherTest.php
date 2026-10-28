@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Poc\OrderStateMachine\Tests\Unit;
+namespace Tlab\StatemachinePlayground\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Poc\OrderStateMachine\EventDispatcher\OrderEventDispatcher;
-use Poc\OrderStateMachine\EventListener\TransitionLogger;
-use Poc\OrderStateMachine\EventListener\NotificationSimulator;
+use Tlab\StatemachinePlayground\EventDispatcher\OrderEventDispatcher;
+use Tlab\StatemachinePlayground\EventListener\TransitionLogger;
+use Tlab\StatemachinePlayground\EventListener\NotificationSimulator;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Tlab\StateMachine\Events\AfterTransition;
 use Tlab\StateMachine\Events\BeforeTransition;

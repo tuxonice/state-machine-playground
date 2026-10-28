@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Poc\OrderStateMachine\Tests\Unit;
+namespace Tlab\StatemachinePlayground\Tests\Unit;
 
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
-use Poc\OrderStateMachine\Entity\Order;
-use Poc\OrderStateMachine\Storage\SqliteTimeoutScheduler;
+use Tlab\StatemachinePlayground\Entity\Order;
+use Tlab\StatemachinePlayground\Storage\SqliteTimeoutScheduler;
 use Tlab\StateMachine\Scheduler\TimeoutScheduler;
 
 class SqliteTimeoutSchedulerTest extends TestCase

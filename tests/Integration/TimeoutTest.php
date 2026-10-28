@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Poc\OrderStateMachine\Tests\Integration;
+namespace Tlab\StatemachinePlayground\Tests\Integration;
 
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
-use Poc\OrderStateMachine\Bootstrap;
-use Poc\OrderStateMachine\Entity\Order;
-use Poc\OrderStateMachine\EventListener\NotificationSimulator;
-use Poc\OrderStateMachine\EventListener\TransitionLogger;
+use Tlab\StatemachinePlayground\Bootstrap;
+use Tlab\StatemachinePlayground\Entity\Order;
+use Tlab\StatemachinePlayground\EventListener\NotificationSimulator;
+use Tlab\StatemachinePlayground\EventListener\TransitionLogger;
 use Tlab\StateMachine\Scheduler\InMemoryTimeoutScheduler;
 
 class TimeoutTest extends TestCase

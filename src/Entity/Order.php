@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Poc\OrderStateMachine\Entity;
+namespace Tlab\StatemachinePlayground\Entity;
 
 use Tlab\StateMachine\Storage\StatefulInterface;
 

@@ -20,12 +20,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Poc\\OrderStateMachine\\": "src/"
+            "Tlab\\StatemachinePlayground\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Poc\\OrderStateMachine\\Tests\\": "tests/"
+            "Tlab\\StatemachinePlayground\\Tests\\": "tests/"
         }
     }
 }

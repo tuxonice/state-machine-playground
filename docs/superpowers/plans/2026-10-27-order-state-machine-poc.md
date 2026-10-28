@@ -90,12 +90,12 @@ poc-state-machine/
     },
     "autoload": {
         "psr-4": {
-            "Poc\\OrderStateMachine\\": "src/"
+            "Tlab\\StatemachinePlayground\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Poc\\OrderStateMachine\\Tests\\": "tests/"
+            "Tlab\\StatemachinePlayground\\Tests\\": "tests/"
         }
     }
 }
@@ -112,14 +112,14 @@ The JSON defines 11 states and 14 transitions following the library's schema. Ke
 **States:** `new`, `pending_payment`, `payment_failed`, `confirmed`, `processing`, `shipped`, `delivered`, `lost`, `return_requested`, `returned`, `cancelled`, `refunded`. State `new` has `"isCurrent": true`.
 
 **Transitions with conditions:**
-- `cancel` from `confirmed` → `cancelled`: condition `Poc\OrderStateMachine\Conditions\OrderNotShippedCondition`
-- `payment_success` from `pending_payment` → `confirmed`: condition `Poc\OrderStateMachine\Conditions\HasPaymentDataCondition`
+- `cancel` from `confirmed` → `cancelled`: condition `Tlab\StatemachinePlayground\Conditions\OrderNotShippedCondition`
+- `payment_success` from `pending_payment` → `confirmed`: condition `Tlab\StatemachinePlayground\Conditions\HasPaymentDataCondition`
 
 **Transitions with commands:**
-- `ship` from `processing` → `shipped`: command `Poc\OrderStateMachine\Commands\LogTransitionCommand`
-- `deliver` from `shipped` → `delivered`: command `Poc\OrderStateMachine\Commands\LogTransitionCommand`
-- `refund` from `returned` → `refunded`: command `Poc\OrderStateMachine\Commands\LogTransitionCommand`
-- `refund` from `cancelled` → `refunded`: command `Poc\OrderStateMachine\Commands\LogTransitionCommand`
+- `ship` from `processing` → `shipped`: command `Tlab\StatemachinePlayground\Commands\LogTransitionCommand`
+- `deliver` from `shipped` → `delivered`: command `Tlab\StatemachinePlayground\Commands\LogTransitionCommand`
+- `refund` from `returned` → `refunded`: command `Tlab\StatemachinePlayground\Commands\LogTransitionCommand`
+- `refund` from `cancelled` → `refunded`: command `Tlab\StatemachinePlayground\Commands\LogTransitionCommand`
 
 **Events:** all events are `"manual": true` (UI-driven). Events: `place_order`, `payment_success`, `payment_failure`, `retry_payment`, `cancel`, `start_processing`, `ship`, `deliver`, `lost_in_transit`, `request_return`, `approve_return`, `reject_return`, `refund`.
 
@@ -144,20 +144,20 @@ Full JSON structure:
     ],
     "transitions": [
         {"source": "new", "target": "pending_payment", "event": "place_order"},
-        {"source": "pending_payment", "target": "confirmed", "event": "payment_success", "condition": "Poc\\OrderStateMachine\\Conditions\\HasPaymentDataCondition"},
+        {"source": "pending_payment", "target": "confirmed", "event": "payment_success", "condition": "Tlab\\StatemachinePlayground\\Conditions\\HasPaymentDataCondition"},
         {"source": "pending_payment", "target": "payment_failed", "event": "payment_failure"},
         {"source": "payment_failed", "target": "pending_payment", "event": "retry_payment"},
         {"source": "payment_failed", "target": "cancelled", "event": "cancel"},
         {"source": "confirmed", "target": "processing", "event": "start_processing"},
-        {"source": "confirmed", "target": "cancelled", "event": "cancel", "condition": "Poc\\OrderStateMachine\\Conditions\\OrderNotShippedCondition"},
-        {"source": "processing", "target": "shipped", "event": "ship", "command": "Poc\\OrderStateMachine\\Commands\\LogTransitionCommand"},
-        {"source": "shipped", "target": "delivered", "event": "deliver", "command": "Poc\\OrderStateMachine\\Commands\\LogTransitionCommand"},
+        {"source": "confirmed", "target": "cancelled", "event": "cancel", "condition": "Tlab\\StatemachinePlayground\\Conditions\\OrderNotShippedCondition"},
+        {"source": "processing", "target": "shipped", "event": "ship", "command": "Tlab\\StatemachinePlayground\\Commands\\LogTransitionCommand"},
+        {"source": "shipped", "target": "delivered", "event": "deliver", "command": "Tlab\\StatemachinePlayground\\Commands\\LogTransitionCommand"},
         {"source": "shipped", "target": "lost", "event": "lost_in_transit"},
         {"source": "delivered", "target": "return_requested", "event": "request_return"},
         {"source": "return_requested", "target": "returned", "event": "approve_return"},
         {"source": "return_requested", "target": "delivered", "event": "reject_return"},
-        {"source": "returned", "target": "refunded", "event": "refund", "command": "Poc\\OrderStateMachine\\Commands\\LogTransitionCommand"},
-        {"source": "cancelled", "target": "refunded", "event": "refund", "command": "Poc\\OrderStateMachine\\Commands\\LogTransitionCommand"}
+        {"source": "returned", "target": "refunded", "event": "refund", "command": "Tlab\\StatemachinePlayground\\Commands\\LogTransitionCommand"},
+        {"source": "cancelled", "target": "refunded", "event": "refund", "command": "Tlab\\StatemachinePlayground\\Commands\\LogTransitionCommand"}
     ],
     "events": [
         {"name": "place_order", "manual": true},
@@ -218,9 +218,9 @@ git commit -m "feat: project scaffolding with JSON state machine config"
 **Interfaces:**
 - Consumes: `Tlab\StateMachine\Conditions\ConditionInterface`, `Tlab\StateMachine\Commands\CommandInterface`
 - Produces:
-  - `Poc\OrderStateMachine\Conditions\OrderNotShippedCondition::check(array $data): bool` — returns `true` when `$data['current_state']` is not in `['shipped', 'delivered', 'lost', 'return_requested', 'returned', 'refunded']`
-  - `Poc\OrderStateMachine\Conditions\HasPaymentDataCondition::check(array $data): bool` — returns `true` when `$data['payment_method']` is set and non-empty
-  - `Poc\OrderStateMachine\Commands\LogTransitionCommand::run(array $data): void` — appends to an internal array; `getLog(): array` returns collected entries
+  - `Tlab\StatemachinePlayground\Conditions\OrderNotShippedCondition::check(array $data): bool` — returns `true` when `$data['current_state']` is not in `['shipped', 'delivered', 'lost', 'return_requested', 'returned', 'refunded']`
+  - `Tlab\StatemachinePlayground\Conditions\HasPaymentDataCondition::check(array $data): bool` — returns `true` when `$data['payment_method']` is set and non-empty
+  - `Tlab\StatemachinePlayground\Commands\LogTransitionCommand::run(array $data): void` — appends to an internal array; `getLog(): array` returns collected entries
 
 - [ ] **Step 1: Write failing tests for `OrderNotShippedCondition`**
 
@@ -332,8 +332,8 @@ git commit -m "feat: add order conditions and log command with unit tests"
 **Interfaces:**
 - Consumes: `Tlab\StateMachine\Reader\DefinitionReader::readFile(string $path): StateMachine`, `Tlab\StateMachine\StateMachineRunner` constructor, conditions from Task 2
 - Produces:
-  - `Poc\OrderStateMachine\Bootstrap::createRunner(string $configPath = null): StateMachineRunner` — loads JSON, wires up the runner with default resolver
-  - `Poc\OrderStateMachine\Bootstrap::getConfigPath(): string` — returns default config path
+  - `Tlab\StatemachinePlayground\Bootstrap::createRunner(string $configPath = null): StateMachineRunner` — loads JSON, wires up the runner with default resolver
+  - `Tlab\StatemachinePlayground\Bootstrap::getConfigPath(): string` — returns default config path
 
 - [ ] **Step 1: Write failing test for the happy path**
 
@@ -555,7 +555,7 @@ git commit -m "feat: add bootstrap and full integration test suite"
 - Create: `bin/cli.php`
 
 **Interfaces:**
-- Consumes: `Poc\OrderStateMachine\Bootstrap::createRunner()`, `StateMachineRunner::apply()`, `StateMachineRunner::availableEvents()`, `StateMachineRunner::generateMarkdownDiagram()`
+- Consumes: `Tlab\StatemachinePlayground\Bootstrap::createRunner()`, `StateMachineRunner::apply()`, `StateMachineRunner::availableEvents()`, `StateMachineRunner::generateMarkdownDiagram()`
 - Produces: `bin/cli.php` — executable CLI script
 
 - [ ] **Step 1: Implement `bin/cli.php`**
@@ -609,7 +609,7 @@ git commit -m "feat: add interactive CLI demo"
 - Create: `public/index.php`
 
 **Interfaces:**
-- Consumes: `Poc\OrderStateMachine\Bootstrap::createRunner()`, `StateMachineRunner::apply()`, `StateMachineRunner::availableEvents()`, `StateMachine::toJson()`, `StateMachine::getStates()`, `StateMachine::getTransitions()`
+- Consumes: `Tlab\StatemachinePlayground\Bootstrap::createRunner()`, `StateMachineRunner::apply()`, `StateMachineRunner::availableEvents()`, `StateMachine::toJson()`, `StateMachine::getStates()`, `StateMachine::getTransitions()`
 - Produces: `public/index.php` — single-file web UI
 
 - [ ] **Step 1: Implement `public/index.php`**

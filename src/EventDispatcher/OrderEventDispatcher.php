@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Poc\OrderStateMachine\EventDispatcher;
+namespace Tlab\StatemachinePlayground\EventDispatcher;
 
-use Poc\OrderStateMachine\EventListener\NotificationSimulator;
-use Poc\OrderStateMachine\EventListener\TransitionLogger;
+use Tlab\StatemachinePlayground\EventListener\NotificationSimulator;
+use Tlab\StatemachinePlayground\EventListener\TransitionLogger;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Tlab\StateMachine\Events\AfterTransition;
 use Tlab\StateMachine\Events\TransitionBlocked;

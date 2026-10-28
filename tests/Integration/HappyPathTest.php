@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Poc\OrderStateMachine\Tests\Integration;
+namespace Tlab\StatemachinePlayground\Tests\Integration;
 
 use PHPUnit\Framework\TestCase;
-use Poc\OrderStateMachine\Bootstrap;
+use Tlab\StatemachinePlayground\Bootstrap;
 
 class HappyPathTest extends TestCase
 {

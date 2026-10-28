@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Poc\OrderStateMachine\Tests\Integration;
+namespace Tlab\StatemachinePlayground\Tests\Integration;
 
 use PHPUnit\Framework\TestCase;
-use Poc\OrderStateMachine\Bootstrap;
-use Poc\OrderStateMachine\Entity\Order;
-use Poc\OrderStateMachine\Storage\SqliteStateStorage;
+use Tlab\StatemachinePlayground\Bootstrap;
+use Tlab\StatemachinePlayground\Entity\Order;
+use Tlab\StatemachinePlayground\Storage\SqliteStateStorage;
 
 class SqliteStorageTest extends TestCase
 {
