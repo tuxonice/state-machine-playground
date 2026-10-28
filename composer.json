@@ -1,0 +1,31 @@
+{
+    "name": "poc/order-state-machine",
+    "description": "POC evaluating tlab/state-machine for order processing",
+    "type": "project",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/tuxonice/state-machine"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "php": "^8.2",
+        "tuxonice/state-machine": "dev-main"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.3",
+        "jbzoo/mermaid-php": "^7.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Poc\\OrderStateMachine\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Poc\\OrderStateMachine\\Tests\\": "tests/"
+        }
+    }
+}

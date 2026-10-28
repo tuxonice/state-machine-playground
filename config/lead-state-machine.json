@@ -1,0 +1,78 @@
+{
+  "name": "real_estate_lead",
+  "states": [
+    {"name": "new", "isCurrent": true},
+    {"name": "contacted"},
+    {"name": "qualified"},
+    {"name": "nurturing"},
+    {"name": "viewing_scheduled"},
+    {"name": "viewing_completed"},
+    {"name": "offer_made"},
+    {"name": "negotiating"},
+    {"name": "offer_accepted"},
+    {"name": "under_contract"},
+    {"name": "closed"},
+    {"name": "unqualified"},
+    {"name": "lost"}
+  ],
+  "events": [
+    {"name": "contact", "manual": true},
+    {"name": "qualify", "manual": true},
+    {"name": "disqualify", "manual": true},
+    {"name": "nurture", "manual": true},
+    {"name": "re_engage", "manual": true},
+    {"name": "schedule_viewing", "manual": true},
+    {"name": "complete_viewing", "manual": true},
+    {"name": "schedule_another_viewing", "manual": true},
+    {"name": "make_offer", "manual": true},
+    {"name": "negotiate", "manual": true},
+    {"name": "accept_offer", "manual": true},
+    {"name": "reject_offer", "manual": true},
+    {"name": "sign_contract", "manual": true},
+    {"name": "close_deal", "manual": true},
+    {"name": "lose", "manual": true},
+    {"name": "auto_expire", "timeout": "48 hours"}
+  ],
+  "transitions": [
+    {"source": "new", "target": "contacted", "event": "contact"},
+    {"source": "new", "target": "lost", "event": "lose"},
+    {"source": "new", "target": "lost", "event": "auto_expire"},
+
+    {"source": "contacted", "target": "qualified", "event": "qualify"},
+    {"source": "contacted", "target": "unqualified", "event": "disqualify"},
+    {"source": "contacted", "target": "nurturing", "event": "nurture"},
+    {"source": "contacted", "target": "lost", "event": "lose"},
+
+    {"source": "qualified", "target": "viewing_scheduled", "event": "schedule_viewing"},
+    {"source": "qualified", "target": "nurturing", "event": "nurture"},
+    {"source": "qualified", "target": "lost", "event": "lose"},
+
+    {"source": "nurturing", "target": "contacted", "event": "re_engage"},
+    {"source": "nurturing", "target": "lost", "event": "lose"},
+
+    {"source": "unqualified", "target": "nurturing", "event": "nurture"},
+    {"source": "unqualified", "target": "lost", "event": "lose"},
+
+    {"source": "viewing_scheduled", "target": "viewing_completed", "event": "complete_viewing"},
+    {"source": "viewing_scheduled", "target": "lost", "event": "lose"},
+
+    {"source": "viewing_completed", "target": "offer_made", "event": "make_offer"},
+    {"source": "viewing_completed", "target": "viewing_scheduled", "event": "schedule_another_viewing"},
+    {"source": "viewing_completed", "target": "nurturing", "event": "nurture"},
+    {"source": "viewing_completed", "target": "lost", "event": "lose"},
+
+    {"source": "offer_made", "target": "negotiating", "event": "negotiate"},
+    {"source": "offer_made", "target": "viewing_completed", "event": "reject_offer"},
+    {"source": "offer_made", "target": "lost", "event": "lose"},
+
+    {"source": "negotiating", "target": "offer_accepted", "event": "accept_offer"},
+    {"source": "negotiating", "target": "viewing_completed", "event": "reject_offer"},
+    {"source": "negotiating", "target": "lost", "event": "lose"},
+
+    {"source": "offer_accepted", "target": "under_contract", "event": "sign_contract"},
+    {"source": "offer_accepted", "target": "lost", "event": "lose"},
+
+    {"source": "under_contract", "target": "closed", "event": "close_deal"},
+    {"source": "under_contract", "target": "lost", "event": "lose"}
+  ]
+}
