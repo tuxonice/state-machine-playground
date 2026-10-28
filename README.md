@@ -4,15 +4,17 @@ A proof-of-concept evaluating the [tuxonice/state-machine](https://github.com/tu
 
 ## Requirements
 
-- Docker and Docker Compose, **or**
-- PHP 8.2+ and Composer
+- Docker and Docker Compose
 
-## Docker (recommended)
+All commands run through Docker; nothing needs to be installed on the host.
 
-Build and start the web UI:
+## Getting Started
+
+Install dependencies into `./vendor`, then build and start the web UI:
 
 ```bash
-docker compose up --build
+make install
+make up
 ```
 
 Then open http://localhost:8080 in your browser.
@@ -20,42 +22,26 @@ Then open http://localhost:8080 in your browser.
 Run tests:
 
 ```bash
-docker compose run --rm web vendor/bin/phpunit
+make test
 ```
 
-Run the CLI demo:
+All available commands via `make help`. Source files, `composer.json`, `composer.lock` and `vendor/` are mounted as volumes, so changes are reflected immediately without rebuilding. After changing `docker-compose.yml`, recreate the container with `make restart`.
 
-```bash
-docker compose run --rm web php bin/cli.php                                    # order machine
-docker compose run --rm web php bin/cli.php --config config/lead-state-machine.json  # lead machine
-```
-
-All available commands via `make help`. Source files are mounted as volumes, so changes to `config/`, `src/`, `public/`, `bin/`, and `tests/` are reflected immediately without rebuilding.
-
-## Local Setup (without Docker)
-
-```bash
-composer install
-```
-
-## Run Tests
-
-```bash
-vendor/bin/phpunit
-```
+Open a shell in the container with `make shell`; run Composer there or via `docker compose run --rm web composer <command>`.
 
 ## CLI Demo
 
 Interactive terminal demo that lets you walk through order transitions step by step:
 
 ```bash
-php bin/cli.php
+make cli          # order machine
+make cli-leads    # lead machine
 ```
 
 Use a custom config:
 
 ```bash
-php bin/cli.php --config path/to/your-config.json
+docker compose run --rm web php bin/cli.php --config path/to/your-config.json
 ```
 
 Features:
@@ -70,13 +56,7 @@ Features:
 
 ## Web UI
 
-Start the PHP built-in server:
-
-```bash
-php -S localhost:8080 -t public/
-```
-
-Then open http://localhost:8080 in your browser.
+Start it with `make up`, then open http://localhost:8080 in your browser.
 
 Features:
 - **Config-agnostic** — auto-discovers all `*-state-machine.json` files in `config/`; title, diagram, states, and terminal states are derived from whichever config is active
