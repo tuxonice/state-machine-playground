@@ -30,3 +30,8 @@ make clean                                # removes containers, volumes, data/
 - **Events**: `OrderEventDispatcher` forwards PSR-14 `BeforeTransition`/`AfterTransition`/`TransitionBlocked` to `TransitionLogger` (audit log) and `NotificationSimulator`. The web UI log panels are session-scoped; history is in SQLite.
 - **`public/index.php`** is the whole web UI (routing, handlers, HTML, Mermaid rendering) in one file; selected config/order are kept in `$_SESSION`. `bin/cli.php` is the equivalent terminal demo.
 - **Tests**: `tests/Unit` for individual classes, `tests/Integration` for end-to-end flows per scenario (happy path, cancellation, timeouts, onEnter, returns, SQLite). Design notes/plan live in `docs/superpowers/plans/`.
+
+## Rules
+
+- Always run commands (tests, CLI, composer, PHP scripts) through Docker (`docker compose run --rm web ...` or the `make` targets), never directly on the host.
+- Use Conventional Commits for commit messages (e.g. `feat:`, `fix:`, `docs:`, `chore:`, `test:`, `refactor:`).
