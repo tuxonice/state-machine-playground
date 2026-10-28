@@ -41,9 +41,9 @@ install: ## Install dependencies into ./vendor (via Docker)
 shell: ## Open a shell in the web container
 	docker compose run --rm web bash
 
-clean: ## Remove containers, volumes, and SQLite data
-	docker compose down -v
-	rm -rf data/
+clean: ## Remove containers and SQLite data
+	docker compose down
+	docker compose run --rm web rm -rf data
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-16s\033[0m %s\n", $$1, $$2}'

@@ -25,7 +25,7 @@ Run tests:
 make test
 ```
 
-All available commands via `make help`. Source files, `composer.json`, `composer.lock` and `vendor/` are mounted as volumes, so changes are reflected immediately without rebuilding. After changing `docker-compose.yml`, recreate the container with `make restart`.
+All available commands via `make help`. The whole project directory is mounted into the container (including `vendor/` and the SQLite `data/` directory), so changes are reflected immediately without rebuilding. After changing `docker-compose.yml`, recreate the container with `make restart`.
 
 Open a shell in the container with `make shell`; run Composer there or via `docker compose run --rm web composer <command>`.
 
