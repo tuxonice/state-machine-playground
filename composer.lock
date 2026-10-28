@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f04fb4b6af578c9135aa02815cce24ba",
+    "content-hash": "5acfd8fde0b8b85cd14709f3d8969bb6",
     "packages": [
         {
             "name": "opis/json-schema",
@@ -304,7 +304,7 @@
             "version": "dev-main",
             "source": {
                 "type": "git",
-                "url": "git@github.com:tuxonice/state-machine.git",
+                "url": "https://github.com/tuxonice/state-machine.git",
                 "reference": "6cb88324a5486bac292941d18664880808c3692e"
             },
             "dist": {
