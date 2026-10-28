@@ -9,6 +9,9 @@ services:
       - ./public:/app/public
       - ./bin:/app/bin
       - ./tests:/app/tests
+      - ./composer.json:/app/composer.json
+      - ./composer.lock:/app/composer.lock
+      - ./vendor:/app/vendor
       - order-data:/app/data
 
 volumes:

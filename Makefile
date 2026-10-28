@@ -1,4 +1,4 @@
-.PHONY: build up start stop down restart logs test cli cli-leads diagram diagram-leads install clean
+.PHONY: build up start stop down restart logs test cli cli-leads diagram diagram-leads install shell clean
 
 build: ## Build Docker image
 	docker compose build
@@ -35,8 +35,11 @@ diagram: ## Print the order state machine Mermaid diagram
 diagram-leads: ## Print the lead state machine Mermaid diagram
 	docker compose run --rm web php -r "require 'vendor/autoload.php'; echo (new Tlab\StateMachine\StateMachineRunner((new Tlab\StateMachine\Reader\DefinitionReader())->readFile('config/lead-state-machine.json')))->generateMarkdownDiagram();"
 
-install: ## Install dependencies locally (without Docker)
-	composer install
+install: ## Install dependencies into ./vendor (via Docker)
+	docker compose run --rm web composer install
+
+shell: ## Open a shell in the web container
+	docker compose run --rm web bash
 
 clean: ## Remove containers, volumes, and SQLite data
 	docker compose down -v
