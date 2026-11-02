@@ -246,11 +246,49 @@ foreach ($stateMachine->getStates() as $state) {
     $mermaid .= "    {$name}[\"{$label}\"]\n";
 }
 $mermaid .= "\n";
+$eventTimeouts = [];
+$eventCommands = [];
+foreach ($stateMachine->getEvents() as $event) {
+    if ($event->getTimeout() !== null) {
+        $eventTimeouts[$event->getName()] = $event->getTimeout();
+    }
+    if ($event->getCommand() !== null) {
+        $eventCommands[$event->getName()] = $event->getCommand();
+    }
+}
+
+// "Tlab\...\HasPaymentDataCondition" -> "HasPaymentData"
+function shortClassName(string $fqcn): string
+{
+    $short = basename(str_replace('\\', '/', $fqcn));
+    return preg_replace('/(Condition|Command)$/', '', $short) ?: $short;
+}
+// Mermaid indexes edges in declaration order; track timeout edges for linkStyle
+$timeoutEdges = [];
+$edgeIndex = 0;
 foreach ($stateMachine->getTransitions() as $transition) {
     $source = $transition->getSource();
     $target = $transition->getTarget();
-    $event = str_replace('_', ' ', $transition->getEvent());
-    $mermaid .= "    {$source} -->|\"{$event}\"| {$target}\n";
+    $eventName = $transition->getEvent();
+    $event = str_replace('_', ' ', $eventName);
+    // Label: event, then 🛡 guard condition, then ⚙ command
+    $label = isset($eventTimeouts[$eventName]) ? "⏱ {$event} · {$eventTimeouts[$eventName]}" : $event;
+    if ($transition->getCondition() !== null) {
+        $label .= '<br/>🛡 ' . shortClassName($transition->getCondition());
+    }
+    $command = $transition->getCommand() ?? $eventCommands[$eventName] ?? null;
+    if ($command !== null) {
+        $label .= '<br/>⚙ ' . shortClassName($command);
+    }
+    $arrow = isset($eventTimeouts[$eventName]) ? '-.->' : '-->';
+    $mermaid .= "    {$source} {$arrow}|\"{$label}\"| {$target}\n";
+    if (isset($eventTimeouts[$eventName])) {
+        $timeoutEdges[] = $edgeIndex;
+    }
+    $edgeIndex++;
+}
+if ($timeoutEdges) {
+    $mermaid .= "    linkStyle " . implode(',', $timeoutEdges) . " stroke:#fd7e14,stroke-width:2px,color:#fd7e14\n";
 }
 $mermaid .= "\n";
 $mermaid .= "    classDef current fill:#198754,stroke:#146c43,color:#fff,stroke-width:3px\n";
@@ -412,6 +450,14 @@ foreach ($terminalStates as $ts) {
                         <pre class="mermaid">
 <?= htmlspecialchars($mermaid) ?>
                         </pre>
+                        <div class="d-flex flex-wrap justify-content-center gap-3 mt-3 small text-muted">
+                            <span><svg width="32" height="8" aria-hidden="true"><line x1="0" y1="4" x2="32" y2="4" stroke="#333" stroke-width="2"/></svg> Event</span>
+                            <span><svg width="32" height="8" aria-hidden="true"><line x1="0" y1="4" x2="32" y2="4" stroke="#fd7e14" stroke-width="2" stroke-dasharray="4 3"/></svg> ⏱ Timeout (fires automatically after the duration)</span>
+                            <span>🛡 Condition (guard that must pass)</span>
+                            <span>⚙ Command (runs on transition)</span>
+                            <span><span class="badge" style="background:#198754">&nbsp;</span> Current state</span>
+                            <span><span class="badge" style="background:#6c757d">&nbsp;</span> Terminal state</span>
+                        </div>
                     </div>
                 </div>
             </div>
