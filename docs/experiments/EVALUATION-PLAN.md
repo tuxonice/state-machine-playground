@@ -101,12 +101,21 @@ Experiments 1–4. Their findings decide adoption, and each gives a clear yes, n
 **Adopt with a wrapper.** No experiment found a blocker. The library is a correct, small, fast, framework-agnostic flat state machine. It leaves the following to the application, and every one of them needs code we write:
 
 1. **Concurrency and atomicity** (experiments 1, 2): a lock or version check, a transaction per transition, side effects after commit.
-2. **A reliable timeout worker** (experiment 3): lease and acknowledge instead of `processTimeouts()`, batching, dead-lettering, indexed scheduler table (experiment 7).
+2. **A reliable timeout worker** (experiment 3): lease and acknowledge instead of `processTimeouts()`, batching, dead-lettering, indexed scheduler table (experiment 7). Since done, see "Fixed since the experiments".
 3. **Versioned, immutable definitions** (experiment 4): works as designed, with a version stored on every order and a release fingerprint check.
 4. **One entry point that builds `$data`** (experiment 5): order id and actor set from the subject, never by callers.
 5. **Definition rules in CI** (experiments 6, 8): the checker in `experiments/08-integration/`.
 
 Not tested: Eloquent and Laravel specifics, and real database latency under load.
+
+## Fixed since the experiments
+
+The findings describe the code as it was when each experiment ran. Two changes have landed since, so re-running experiments 2, 3 and 7 now gives different results:
+
+- **Library, [tuxonice/state-machine#8](https://github.com/tuxonice/state-machine/pull/8):** timeouts are scheduled right after each state is stored, before `AfterTransition`. `processTimeouts()` keeps going past a failing timeout and reports all failures in a `TimeoutProcessingException`. The optional `AcknowledgingTimeoutScheduler` (`claimDue()`, `acknowledge()`) keeps a timeout until it has been dealt with.
+- **Playground, `SqliteTimeoutScheduler`:** implements `AcknowledgingTimeoutScheduler` with a lease (60 s), batches (100), dead-lettering after 3 attempts, and indexes on `order_id` and `due_at`.
+
+Each affected findings note starts with a "Fixed since" section that lists what changed. Item 2 of the verdict above is now covered by the library plus the playground scheduler. Still open from the same experiments: experiment 1's race (the per-order lock), experiment 2's side effects before commit, and the guard on a timeout event that drops it (experiment 3, T5).
 
 ## Open question
 

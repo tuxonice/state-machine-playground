@@ -2,6 +2,13 @@
 
 Verdict: **adopt.** The library's own cost is small for realistic definitions. The scale risks sit in what we plug into it: a scheduler whose `cancel()` scans the whole table, and loading every due timeout at once. Parsing a definition is cheap enough to ignore for one version, and cheap to cache for several.
 
+## Fixed since
+
+- **P5:** the playground's `SqliteTimeoutScheduler` now creates the `order_id` and `due_at` indexes itself, and a test checks that lookups use them. Its "no indexes" rows therefore no longer measure an unindexed table if this experiment is re-run.
+- **P4:** `InMemoryTimeoutScheduler` now implements `AcknowledgingTimeoutScheduler` ([tuxonice/state-machine#8](https://github.com/tuxonice/state-machine/pull/8)), so `processTimeouts()` takes the claim-and-acknowledge path. P4 was not re-measured.
+
+"What we would have to do" item 1 is done for `order_id` and `due_at` (the claim columns are not indexed; the claim query filters on `due_at`), and item 3 is done (`batchSize`, default 100). Items 2 and 4 still apply. The quadratic `cancel()` in `InMemoryTimeoutScheduler` is unchanged.
+
 ## Setup
 
 `experiments/07-scale/run.php`. Medians of 3 to 5 repeats, in Docker on one machine, so compare numbers with each other rather than reading them as absolute. Large definitions are generated: a chain of N states, each with three transitions.

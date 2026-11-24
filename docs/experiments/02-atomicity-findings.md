@@ -2,6 +2,18 @@
 
 Verdict: **adopt with wrapper.** The library gives no atomicity: a failure part-way through a transition leaves state, side effects and timeouts out of step. A DB transaction around `applyTo` fixes the database part. Events and e-mails that go out inline can't be rolled back, so the wrapper also has to hold them until after commit.
 
+## Fixed since
+
+[tuxonice/state-machine#8](https://github.com/tuxonice/state-machine/pull/8) now schedules a state's timeouts right after the state is stored, before `AfterTransition` is dispatched. Re-running this experiment afterwards (raw mode):
+
+| Scenario | When the experiment ran | Now |
+|---|---|---|
+| S4 after-listener throws | state moved, no `auto_cancel` scheduled | state moved, `auto_cancel` scheduled |
+| S5 scheduler fails | state moved, `AfterTransition` and the e-mail went out | state moved, no `AfterTransition` and no e-mail |
+| S6 onEnter step fails | stuck in `confirmed` with a stale `auto_cancel` | stuck in `confirmed` with no timeout |
+
+S1 to S3 and all tx-mode results are unchanged. Findings 1, 3, 4 and 5 below still hold. Finding 2 is fixed for a failing listener. A failing scheduler still leaves the state moved without its timeout, now without listeners being told.
+
 ## Setup
 
 `experiments/02-atomicity/`. A small machine (`new` to `pending_payment` to `confirmed` to `processing`, with an `auto_cancel` timeout and an `auto_process` onEnter). A failure is injected at one step per scenario. Storage, scheduler and a side-effect ledger share one SQLite connection. Each scenario runs twice:
