@@ -305,12 +305,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tuxonice/state-machine.git",
-                "reference": "6cb88324a5486bac292941d18664880808c3692e"
+                "reference": "636954bd695b97b89bcad651f6b30207a0260d82"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tuxonice/state-machine/zipball/6cb88324a5486bac292941d18664880808c3692e",
-                "reference": "6cb88324a5486bac292941d18664880808c3692e",
+                "url": "https://api.github.com/repos/tuxonice/state-machine/zipball/636954bd695b97b89bcad651f6b30207a0260d82",
+                "reference": "636954bd695b97b89bcad651f6b30207a0260d82",
                 "shasum": ""
             },
             "require": {
@@ -371,7 +371,11 @@
                 "state-machine",
                 "workflow"
             ],
-            "time": "2026-10-02T17:31:33+00:00"
+            "support": {
+                "source": "https://github.com/tuxonice/state-machine/tree/main",
+                "issues": "https://github.com/tuxonice/state-machine/issues"
+            },
+            "time": "2026-11-24T15:22:30+00:00"
         }
     ],
     "packages-dev": [
@@ -2207,5 +2211,5 @@
         "php": "^8.2"
     },
     "platform-dev": {},
-    "plugin-api-version": "2.9.0"
+    "plugin-api-version": "2.11.0"
 }

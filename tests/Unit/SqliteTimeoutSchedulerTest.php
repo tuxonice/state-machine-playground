@@ -154,6 +154,62 @@ class SqliteTimeoutSchedulerTest extends TestCase
         $this->assertEmpty($scheduler->all());
     }
 
+    public function testClaimDueReturnsAtMostOneBatchOldestFirst(): void
+    {
+        $scheduler = new SqliteTimeoutScheduler($this->dbPath, batchSize: 2);
+        $scheduler->schedule(new Order('ORD-3'), 'pending_payment', 'auto_cancel', new DateTimeImmutable('2026-10-28 10:20:00'));
+        $scheduler->schedule(new Order('ORD-1'), 'pending_payment', 'auto_cancel', new DateTimeImmutable('2026-10-28 10:00:00'));
+        $scheduler->schedule(new Order('ORD-2'), 'pending_payment', 'auto_cancel', new DateTimeImmutable('2026-10-28 10:10:00'));
+
+        $claimed = $scheduler->claimDue(new DateTimeImmutable('2026-10-28 11:00:00'));
+
+        $this->assertSame(['ORD-1', 'ORD-2'], array_map(fn($t) => $t->getSubject()->getId(), $claimed));
+    }
+
+    public function testATimeoutThatKeepsFailingIsNoLongerClaimedAfterMaxAttempts(): void
+    {
+        $scheduler = new SqliteTimeoutScheduler($this->dbPath, leaseSeconds: 60, maxAttempts: 2);
+        $scheduler->schedule(new Order('ORD-001'), 'pending_payment', 'auto_cancel', new DateTimeImmutable('2026-10-28 10:00:00'));
+        $start = new DateTimeImmutable('2026-10-28 10:01:00');
+
+        $first = $scheduler->claimDue($start);                         // never acknowledged: it failed
+        $second = $scheduler->claimDue($start->modify('+61 seconds'));  // after the lease, failed again
+        $third = $scheduler->claimDue($start->modify('+122 seconds'));
+
+        $this->assertCount(1, $first);
+        $this->assertCount(1, $second);
+        $this->assertSame([], $third);
+        $this->assertCount(1, $scheduler->all(), 'kept for inspection, not deleted');
+    }
+
+    public function testLookupsByOrderAndByDueDateUseAnIndexInsteadOfScanningTheTable(): void
+    {
+        new SqliteTimeoutScheduler($this->dbPath);
+        $pdo = new \PDO("sqlite:{$this->dbPath}");
+        $plan = fn(string $sql) => implode(' | ', array_column($pdo->query("EXPLAIN QUERY PLAN {$sql}")->fetchAll(\PDO::FETCH_ASSOC), 'detail'));
+
+        // cancel() runs on every transition; claimDue() on every worker run
+        $byOrder = $plan("DELETE FROM scheduled_timeouts WHERE order_id = 'ORD-1'");
+        $byDue = $plan("SELECT id FROM scheduled_timeouts WHERE due_at <= '2026-10-28 10:00:00' ORDER BY due_at");
+
+        $this->assertMatchesRegularExpression('/USING (COVERING )?INDEX/', $byOrder, $byOrder);
+        $this->assertMatchesRegularExpression('/USING (COVERING )?INDEX/', $byDue, $byDue);
+    }
+
+    public function testADatabaseCreatedBeforeClaimingExistedStillWorks(): void
+    {
+        $old = new \PDO("sqlite:{$this->dbPath}");
+        $old->exec('CREATE TABLE scheduled_timeouts (id INTEGER PRIMARY KEY AUTOINCREMENT, order_id TEXT NOT NULL,
+            state TEXT NOT NULL, event TEXT NOT NULL, due_at TEXT NOT NULL)');
+        $old->exec("INSERT INTO scheduled_timeouts (order_id, state, event, due_at)
+            VALUES ('ORD-OLD', 'pending_payment', 'auto_cancel', '2026-10-28 10:00:00')");
+
+        $claimed = (new SqliteTimeoutScheduler($this->dbPath))->claimDue(new DateTimeImmutable('2026-10-28 10:01:00'));
+
+        $this->assertCount(1, $claimed);
+        $this->assertSame('ORD-OLD', $claimed[0]->getSubject()->getId());
+    }
+
     public function testPendingForOrder(): void
     {
         $scheduler = new SqliteTimeoutScheduler($this->dbPath);
