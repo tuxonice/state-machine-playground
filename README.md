@@ -63,7 +63,7 @@ Features:
 - **Multi-machine switcher** — buttons at the top switch between configs (e.g. "Real Estate Lead" | "Order"); each machine has its own scoped entry list
 - **Multi-entry management** — create, select, and delete entries; each persisted independently with machine-prefixed IDs (e.g. `ORD-1234`, `REA-5678`)
 - **SQLite persistence** via custom `StateStorageInterface` — entry states, transition history, and scheduled timeouts survive server restarts
-- **Persistent timeout scheduler** — `SqliteTimeoutScheduler` stores scheduled timeouts in SQLite; pending timeouts display per entry with a "Simulate time" button
+- **Persistent timeout scheduler** — `SqliteTimeoutScheduler` stores scheduled timeouts in SQLite; pending timeouts display per entry with a "Simulate time" button. It implements the library's `AcknowledgingTimeoutScheduler`: due timeouts are claimed with a lease (default 60 s, in batches of 100) and deleted only once dealt with, so a failing timeout or a crashed worker is retried instead of lost, and two workers do not apply the same timeout. A timeout that fails 3 times stays in the table and is no longer claimed
 - Visual Mermaid diagram with current state highlighted
 - Click-to-transition buttons
 - Persistent transition history per entry (stored in SQLite)
