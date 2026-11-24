@@ -1,0 +1,37 @@
+{
+  "name": "fx",
+  "states": [
+    {
+      "name": "a",
+      "isCurrent": true
+    },
+    {
+      "name": "b"
+    },
+    {
+      "name": "c"
+    }
+  ],
+  "transitions": [
+    {
+      "source": "a",
+      "target": "b",
+      "event": "go"
+    },
+    {
+      "source": "b",
+      "target": "c",
+      "event": "finish"
+    }
+  ],
+  "events": [
+    {
+      "name": "go",
+      "manual": true
+    },
+    {
+      "name": "finish",
+      "manual": true
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "name": "fx",
+  "states": [
+    {
+      "name": "a",
+      "isCurrent": true
+    },
+    {
+      "name": "b"
+    },
+    {
+      "name": "c"
+    }
+  ],
+  "transitions": [
+    {
+      "source": "a",
+      "target": "b",
+      "event": "create"
+    },
+    {
+      "source": "b",
+      "target": "b",
+      "event": "remind"
+    },
+    {
+      "source": "b",
+      "target": "c",
+      "event": "expire"
+    }
+  ],
+  "events": [
+    {
+      "name": "create",
+      "manual": true
+    },
+    {
+      "name": "remind",
+      "timeout": "15 minutes"
+    },
+    {
+      "name": "expire",
+      "timeout": "30 minutes"
+    }
+  ]
+}

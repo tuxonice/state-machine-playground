@@ -1,0 +1,11 @@
+{
+    "name": "tlab/statemachine-playground-experiment-08",
+    "description": "Isolated dependencies for experiment 8 (Doctrine integration). Not part of the playground's own dependencies.",
+    "type": "project",
+    "require": {
+        "php": ">=8.2",
+        "doctrine/orm": "^3.3",
+        "doctrine/dbal": "^4.2",
+        "symfony/cache": "^7.0"
+    }
+}

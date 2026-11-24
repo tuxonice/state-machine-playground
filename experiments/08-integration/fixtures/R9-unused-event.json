@@ -1,0 +1,29 @@
+{
+  "name": "fx",
+  "states": [
+    {
+      "name": "a",
+      "isCurrent": true
+    },
+    {
+      "name": "b"
+    }
+  ],
+  "transitions": [
+    {
+      "source": "a",
+      "target": "b",
+      "event": "go"
+    }
+  ],
+  "events": [
+    {
+      "name": "go",
+      "manual": true
+    },
+    {
+      "name": "never_used",
+      "manual": true
+    }
+  ]
+}

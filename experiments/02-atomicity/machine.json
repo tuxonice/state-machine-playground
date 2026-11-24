@@ -1,0 +1,24 @@
+{
+    "name": "atomicity",
+    "states": [
+        {"name": "new", "isCurrent": true},
+        {"name": "pending_payment"},
+        {"name": "confirmed"},
+        {"name": "processing"},
+        {"name": "cancelled"}
+    ],
+    "transitions": [
+        {"source": "new", "target": "pending_payment", "event": "place_order"},
+        {"source": "pending_payment", "target": "confirmed", "event": "payment_success", "command": "Experiment02\\ChargeCommand"},
+        {"source": "pending_payment", "target": "cancelled", "event": "auto_cancel"},
+        {"source": "confirmed", "target": "processing", "event": "auto_process", "command": "Experiment02\\ReserveStockCommand"},
+        {"source": "confirmed", "target": "processing", "event": "start_processing", "command": "Experiment02\\ReserveStockCommand"}
+    ],
+    "events": [
+        {"name": "place_order", "manual": true},
+        {"name": "payment_success", "manual": true},
+        {"name": "start_processing", "manual": true},
+        {"name": "auto_cancel", "timeout": "30 minutes"},
+        {"name": "auto_process", "onEnter": true}
+    ]
+}
