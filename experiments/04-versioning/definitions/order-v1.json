@@ -1,0 +1,25 @@
+{
+    "name": "order",
+    "states": [
+        {"name": "new", "isCurrent": true},
+        {"name": "pending_payment"},
+        {"name": "confirmed"},
+        {"name": "shipped"},
+        {"name": "delivered"},
+        {"name": "cancelled"}
+    ],
+    "transitions": [
+        {"source": "new", "target": "pending_payment", "event": "place_order"},
+        {"source": "pending_payment", "target": "confirmed", "event": "payment_success", "condition": "Experiment04\\Guards\\HasPayment"},
+        {"source": "pending_payment", "target": "cancelled", "event": "auto_cancel"},
+        {"source": "confirmed", "target": "shipped", "event": "ship"},
+        {"source": "shipped", "target": "delivered", "event": "deliver"}
+    ],
+    "events": [
+        {"name": "place_order", "manual": true},
+        {"name": "payment_success", "manual": true},
+        {"name": "ship", "manual": true},
+        {"name": "deliver", "manual": true},
+        {"name": "auto_cancel", "timeout": "30 minutes"}
+    ]
+}

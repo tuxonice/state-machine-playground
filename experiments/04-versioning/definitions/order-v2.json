@@ -1,0 +1,30 @@
+{
+    "name": "order",
+    "states": [
+        {"name": "new", "isCurrent": true},
+        {"name": "pending_payment"},
+        {"name": "awaiting_review"},
+        {"name": "confirmed"},
+        {"name": "shipped"},
+        {"name": "delivered"},
+        {"name": "cancelled"}
+    ],
+    "transitions": [
+        {"source": "new", "target": "pending_payment", "event": "place_order"},
+        {"source": "pending_payment", "target": "awaiting_review", "event": "payment_success", "condition": "Experiment04\\Guards\\V2\\HasPaymentAndAddress"},
+        {"source": "pending_payment", "target": "cancelled", "event": "auto_cancel"},
+        {"source": "awaiting_review", "target": "confirmed", "event": "approve_review"},
+        {"source": "awaiting_review", "target": "cancelled", "event": "reject_review"},
+        {"source": "confirmed", "target": "shipped", "event": "ship"},
+        {"source": "shipped", "target": "delivered", "event": "deliver"}
+    ],
+    "events": [
+        {"name": "place_order", "manual": true},
+        {"name": "payment_success", "manual": true},
+        {"name": "approve_review", "manual": true},
+        {"name": "reject_review", "manual": true},
+        {"name": "ship", "manual": true},
+        {"name": "deliver", "manual": true},
+        {"name": "auto_cancel", "timeout": "60 minutes"}
+    ]
+}

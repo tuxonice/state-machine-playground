@@ -1,0 +1,26 @@
+{
+  "name": "fx",
+  "states": [
+    {
+      "name": "a",
+      "isCurrent": true
+    },
+    {
+      "name": "b"
+    }
+  ],
+  "transitions": [
+    {
+      "source": "a",
+      "target": "b",
+      "event": "go",
+      "condition": "Tlab\\StatemachinePlayground\\Conditions\\HasPaymentDataCondition && Tlab\\StatemachinePlayground\\Conditions\\HasPaymentDataCondition"
+    }
+  ],
+  "events": [
+    {
+      "name": "go",
+      "manual": true
+    }
+  ]
+}

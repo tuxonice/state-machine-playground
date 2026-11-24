@@ -1,0 +1,26 @@
+{
+  "name": "fx",
+  "states": [
+    {
+      "name": "a",
+      "isCurrent": true
+    },
+    {
+      "name": "b"
+    }
+  ],
+  "transitions": [
+    {
+      "source": "a",
+      "target": "b",
+      "event": "expire",
+      "condition": "Tlab\\StatemachinePlayground\\Conditions\\HasPaymentDataCondition"
+    }
+  ],
+  "events": [
+    {
+      "name": "expire",
+      "timeout": "30 minutes"
+    }
+  ]
+}
