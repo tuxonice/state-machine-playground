@@ -2,6 +2,25 @@
 
 Verdict: **adopt with wrapper.** `processTimeouts()` is fine for a single reliable worker with no failures. It is not safe for production: a crash or one failing order permanently loses timeouts, and two workers apply the same timeout twice. A lease-and-ack loop in our own code fixes all three.
 
+## Fixed since
+
+The lease-and-ack loop now lives in the library and the playground, not in our own loop:
+- [tuxonice/state-machine#8](https://github.com/tuxonice/state-machine/pull/8) added `AcknowledgingTimeoutScheduler`. `processTimeouts()` uses it when available and keeps going past a failing timeout.
+- The playground's `SqliteTimeoutScheduler` implements it, with a lease, batches, dead-lettering and indexes.
+
+The raw mode of this experiment (the library's `processTimeouts()` with that scheduler) now gives:
+
+| Scenario | When the experiment ran | Now |
+|---|---|---|
+| T1 worker killed after 10 of 50 | 40 orders stuck with no timeout left | 40 still scheduled, claimable after the lease |
+| T2 poison order | batch aborted: 24 cancelled, 26 stuck | 49 cancelled, the poison order's timeout kept for retry, failure reported in a `TimeoutProcessingException` |
+| T3 two workers at once | 12 timeouts applied twice | 0 applied twice |
+
+T4 was not re-run. T5 is unchanged: a timeout whose guard fails is still dropped, not retried. In "What we would have to add":
+- Items 1 and 2 are done. The library re-checks the order's state before applying a claimed timeout.
+- Item 3 is partly done: dead-lettered rows are kept in the table, but nothing alerts on them yet.
+- Items 4 and 5 still apply.
+
 ## Setup
 
 `experiments/03-timeouts/`. The real order machine (`auto_cancel` after 30 minutes in `pending_payment`), real `SqliteStateStorage` and `SqliteTimeoutScheduler` in a shared SQLite file, workers as separate PHP processes. Each of T1 to T4 runs two ways:
