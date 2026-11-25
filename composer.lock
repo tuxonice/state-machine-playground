@@ -354,12 +354,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tuxonice/state-machine.git",
-                "reference": "4d816a7c12c78044d51d12651ba0b9ebe96d6a27"
+                "reference": "03abdec2c482e84ec758c90ea1b97857179f9945"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tuxonice/state-machine/zipball/4d816a7c12c78044d51d12651ba0b9ebe96d6a27",
-                "reference": "4d816a7c12c78044d51d12651ba0b9ebe96d6a27",
+                "url": "https://api.github.com/repos/tuxonice/state-machine/zipball/03abdec2c482e84ec758c90ea1b97857179f9945",
+                "reference": "03abdec2c482e84ec758c90ea1b97857179f9945",
                 "shasum": ""
             },
             "require": {
@@ -425,7 +425,7 @@
                 "source": "https://github.com/tuxonice/state-machine/tree/main",
                 "issues": "https://github.com/tuxonice/state-machine/issues"
             },
-            "time": "2026-11-25T17:46:49+00:00"
+            "time": "2026-11-25T17:57:17+00:00"
         }
     ],
     "packages-dev": [
