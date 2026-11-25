@@ -11,6 +11,7 @@ use Tlab\StateMachine\Conditions\ConditionInterface;
 use Tlab\StateMachine\Scheduler\ScheduledTimeout;
 use Tlab\StateMachine\Scheduler\TimeoutScheduler;
 use Tlab\StateMachine\Storage\StateStorageInterface;
+use Tlab\StateMachine\TransitionContext;
 
 /**
  * Storage decorator that injects the faults a worker meets in production:
@@ -130,7 +131,7 @@ final class LeasingScheduler implements TimeoutScheduler
 /** A guard that never passes, to show what happens to a timeout whose condition fails when it is due. */
 final class NeverCondition implements ConditionInterface
 {
-    public function check(array $data): bool
+    public function check(TransitionContext $context): bool
     {
         return false;
     }

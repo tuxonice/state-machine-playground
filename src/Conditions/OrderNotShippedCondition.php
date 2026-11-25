@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tlab\StatemachinePlayground\Conditions;
 
 use Tlab\StateMachine\Conditions\ConditionInterface;
+use Tlab\StateMachine\TransitionContext;
 
 class OrderNotShippedCondition implements ConditionInterface
 {
@@ -17,12 +18,12 @@ class OrderNotShippedCondition implements ConditionInterface
         'refunded',
     ];
 
-    public function check(array $data): bool
+    public function check(TransitionContext $context): bool
     {
-        if (!isset($data['current_state'])) {
+        if (!isset($context->data['current_state'])) {
             return true;
         }
 
-        return !in_array($data['current_state'], self::POST_SHIP_STATES, true);
+        return !in_array($context->data['current_state'], self::POST_SHIP_STATES, true);
     }
 }

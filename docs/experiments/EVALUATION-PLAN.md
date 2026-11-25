@@ -117,6 +117,7 @@ The findings describe the code as it was when each experiment ran. Several chang
 - **Library, [tuxonice/state-machine#9](https://github.com/tuxonice/state-machine/pull/9):** a guard or command that needs constructor arguments and is not in the container fails with a clear `ResolutionException`. `validateClasses()` checks every class a definition names, up front. The playground's `DefinitionClassesTest` runs it on every definition.
 - **Library, PSR-20 clock:** the runner takes an optional `ClockInterface`, so timers can be tested without a decorator.
 - **Library, `keepTimeouts`:** a self-transition flagged `"keepTimeouts": true` keeps the state's running timeouts, which avoids experiment 6's reminder trap. The playground's definition checker (R4) accepts it.
+- **Library, `TransitionContext` (breaking):** conditions and commands receive a context with the subject and the transition instead of only the data array, closing experiment 5's identity gap for code that reads the subject. The playground's guards, command and experiments use the new signatures.
 
 Each affected findings note starts with a "Fixed since" section that lists what changed. Item 2 of the verdict above is now covered by the library plus the playground scheduler. Still open from the same experiments: experiment 1's race (the per-order lock), experiment 2's side effects before commit, and the guard on a timeout event that drops it (experiment 3, T5).
 

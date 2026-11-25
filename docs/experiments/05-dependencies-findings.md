@@ -9,7 +9,9 @@ Verdict: **adopt with a thin wrapper.** Dependency injection through a PSR-11 co
 - A guard whose constructor needs a service that is not in the container now fails with `ResolutionException: Class '…' needs constructor arguments; register it in the container`, instead of a raw `ArgumentCountError`.
 - A missing class or a wrong type still loads without complaint and fails on first use. `StateMachineRunner::validateClasses()` now finds all three cases up front, without evaluating or running anything. The playground's `DefinitionClassesTest` calls it on every `config/*-state-machine.json`, which covers "What we would have to add" item 2.
 
-Everything else here is unchanged: guards and commands still get only `$data`, and the available-events listings still ignore guards.
+A later library change replaced the data array with a `TransitionContext` (machine name, source, event, target, data and subject) in `ConditionInterface::check()` and `CommandInterface::run()`. Re-running D2 now shows the guard and the command receiving the subject (`Order S-1`). The subject is null with `apply()`, `can()` and `run()`, which work on a bare state. D5 still records `P-1` for order `P-2`, because `NotifyCommand` still reads the id from `$data`; reading `$context->subject` instead closes that gap, which covers most of "What we would have to add" item 1 (the actor still travels in `$data`).
+
+The available-events listings still ignore guards.
 
 ## Setup
 

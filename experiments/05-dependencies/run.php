@@ -29,6 +29,7 @@ namespace Experiment05 {
     use Tlab\StateMachine\Events\AfterTransition;
     use Tlab\StateMachine\Events\BeforeTransition;
     use Tlab\StateMachine\Events\TransitionBlocked;
+    use Tlab\StateMachine\TransitionContext;
 
     /** Minimal PSR-11 container: has() only for what was registered. */
     final class Container implements ContainerInterface
@@ -85,9 +86,9 @@ namespace Experiment05 {
         {
         }
 
-        public function check(array $data): bool
+        public function check(TransitionContext $context): bool
         {
-            return $this->stock->inStock($data['orderId']);
+            return $this->stock->inStock($context->data['orderId']);
         }
     }
 
@@ -97,17 +98,17 @@ namespace Experiment05 {
         {
         }
 
-        public function check(array $data): bool
+        public function check(TransitionContext $context): bool
         {
-            return $this->fraud->score($data['orderId']) < 50;
+            return $this->fraud->score($context->data['orderId']) < 50;
         }
     }
 
     final class IsManager implements ConditionInterface
     {
-        public function check(array $data): bool
+        public function check(TransitionContext $context): bool
         {
-            return in_array('manager', $data['actor']['roles'] ?? [], true);
+            return in_array('manager', $context->data['actor']['roles'] ?? [], true);
         }
     }
 
@@ -118,7 +119,7 @@ namespace Experiment05 {
         {
         }
 
-        public function check(array $data): bool
+        public function check(TransitionContext $context): bool
         {
             return true;
         }
@@ -133,16 +134,18 @@ namespace Experiment05 {
         /** @var array<string, array<mixed>> */
         public static array $seen = [];
 
-        public function check(array $data): bool
+        public function check(TransitionContext $context): bool
         {
-            self::$seen['guard'] = $data;
+            self::$seen['guard'] = $context->data;
+            self::$seen['guardSubject'] = $context->subject;
 
             return true;
         }
 
-        public function run(array $data): void
+        public function run(TransitionContext $context): void
         {
-            self::$seen['command'] = $data;
+            self::$seen['command'] = $context->data;
+            self::$seen['commandSubject'] = $context->subject;
         }
     }
 
@@ -152,9 +155,9 @@ namespace Experiment05 {
         {
         }
 
-        public function run(array $data): void
+        public function run(TransitionContext $context): void
         {
-            $this->mailer->sent[] = "refund mail for {$data['orderId']} approved by {$data['actor']['name']}";
+            $this->mailer->sent[] = "refund mail for {$context->data['orderId']} approved by {$context->data['actor']['name']}";
         }
     }
 
@@ -273,8 +276,11 @@ namespace {
     $after = array_values(array_filter($listener->events, fn($e) => $e instanceof AfterTransition))[0];
     show('AfterTransition carries $data and the subject', 'data same=' . var_export($after->data === $data, true) . ', subject=' . get_class($after->subject) . ' ' . $after->subject->getId());
     $sig = fn(string $class, string $method) => implode(', ', array_map(fn($p) => $p->getType() . ' $' . $p->getName(), (new ReflectionMethod($class, $method))->getParameters()));
-    show('ConditionInterface::check signature', '(' . $sig(Tlab\StateMachine\Conditions\ConditionInterface::class, 'check') . ')  -> no subject argument');
-    show('CommandInterface::run signature', '(' . $sig(Tlab\StateMachine\Commands\CommandInterface::class, 'run') . ')  -> no subject argument');
+    show('ConditionInterface::check signature', '(' . $sig(Tlab\StateMachine\Conditions\ConditionInterface::class, 'check') . ')');
+    show('CommandInterface::run signature', '(' . $sig(Tlab\StateMachine\Commands\CommandInterface::class, 'run') . ')');
+    $describe = fn(?object $o) => $o === null ? 'none' : get_class($o) . ' ' . $o->getId();
+    show('subject seen by the guard', $describe(Spy::$seen['guardSubject']));
+    show('subject seen by the command', $describe(Spy::$seen['commandSubject']));
 
     echo "\n### D3 permission guard and the \"available events\" listings\n";
     $clerk = ['orderId' => 'P-1', 'actor' => ['name' => 'Ana', 'roles' => ['clerk']]];

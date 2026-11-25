@@ -28,12 +28,13 @@ namespace Experiment06 {
     use Tlab\StateMachine\Scheduler\InMemoryTimeoutScheduler;
     use Tlab\StateMachine\Scheduler\ScheduledTimeout;
     use Tlab\StateMachine\Scheduler\TimeoutScheduler;
+    use Tlab\StateMachine\TransitionContext;
 
     final class Counter implements CommandInterface
     {
         public static int $runs = 0;
 
-        public function run(array $data): void
+        public function run(TransitionContext $context): void
         {
             self::$runs++;
         }
@@ -41,33 +42,33 @@ namespace Experiment06 {
 
     final class BothDone implements ConditionInterface
     {
-        public function check(array $data): bool
+        public function check(TransitionContext $context): bool
         {
-            return ($data['payment'] ?? null) === 'paid' && ($data['shipment'] ?? null) === 'delivered';
+            return ($context->data['payment'] ?? null) === 'paid' && ($context->data['shipment'] ?? null) === 'delivered';
         }
     }
 
     final class PrevIsA implements ConditionInterface
     {
-        public function check(array $data): bool
+        public function check(TransitionContext $context): bool
         {
-            return ($data['previous'] ?? null) === 'a';
+            return ($context->data['previous'] ?? null) === 'a';
         }
     }
 
     final class PrevIsB implements ConditionInterface
     {
-        public function check(array $data): bool
+        public function check(TransitionContext $context): bool
         {
-            return ($data['previous'] ?? null) === 'b';
+            return ($context->data['previous'] ?? null) === 'b';
         }
     }
 
     final class PrevIsC implements ConditionInterface
     {
-        public function check(array $data): bool
+        public function check(TransitionContext $context): bool
         {
-            return ($data['previous'] ?? null) === 'c';
+            return ($context->data['previous'] ?? null) === 'c';
         }
     }
 

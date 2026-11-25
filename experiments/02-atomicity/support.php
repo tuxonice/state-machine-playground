@@ -13,6 +13,7 @@ use Tlab\StateMachine\Events\BeforeTransition;
 use Tlab\StateMachine\Scheduler\TimeoutScheduler;
 use Tlab\StateMachine\Storage\StateStorageInterface;
 use RuntimeException;
+use Tlab\StateMachine\TransitionContext;
 
 /** Shared test context: the DB connection, what was observed, and which faults are armed. */
 final class Ctx
@@ -42,7 +43,7 @@ final class Ctx
 /** Models a payment gateway charge: the effect is recorded in the DB ledger. */
 final class ChargeCommand implements CommandInterface
 {
-    public function run(array $data): void
+    public function run(TransitionContext $context): void
     {
         if (Ctx::$failCommand === 'charge') {
             throw new RuntimeException('charge command failed before doing anything');
@@ -53,7 +54,7 @@ final class ChargeCommand implements CommandInterface
 
 final class ReserveStockCommand implements CommandInterface
 {
-    public function run(array $data): void
+    public function run(TransitionContext $context): void
     {
         if (Ctx::$failCommand === 'reserve') {
             throw new RuntimeException('stock service down');

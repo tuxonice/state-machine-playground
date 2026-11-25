@@ -16,7 +16,7 @@ The raw mode of this experiment (the library's `processTimeouts()` with that sch
 | T2 poison order | batch aborted: 24 cancelled, 26 stuck | 49 cancelled, the poison order's timeout kept for retry, failure reported in a `TimeoutProcessingException` |
 | T3 two workers at once | 12 timeouts applied twice | 0 applied twice |
 
-T4 was not re-run. T5 is unchanged: a timeout whose guard fails is still dropped, not retried. In "What we would have to add":
+T4 re-run later: one `processTimeouts()` call now applies one batch, at most 100 (the scheduler's `batchSize`), so the raw mode cancelled 100 of 3000. A worker must call it again until it returns nothing, or a once-a-minute cron works through a 3000 backlog in 30 minutes. T5 is unchanged: a timeout whose guard fails is still dropped, not retried. In "What we would have to add":
 - Items 1 and 2 are done. The library re-checks the order's state before applying a claimed timeout.
 - Item 3 is partly done: dead-lettered rows are kept in the table, but nothing alerts on them yet.
 - Items 4 and 5 still apply.

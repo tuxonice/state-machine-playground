@@ -7,6 +7,7 @@ namespace Tlab\StatemachinePlayground\Tests\Unit;
 use PHPUnit\Framework\TestCase;
 use Tlab\StatemachinePlayground\Conditions\StockAvailableCondition;
 use Tlab\StateMachine\Conditions\ConditionInterface;
+use Tlab\StateMachine\TransitionContext;
 
 class StockAvailableConditionTest extends TestCase
 {
@@ -19,18 +20,24 @@ class StockAvailableConditionTest extends TestCase
     public function testReturnsTrueWhenStockAvailable(): void
     {
         $condition = new StockAvailableCondition();
-        $this->assertTrue($condition->check(['stock_available' => true]));
+        $this->assertTrue($condition->check($this->context(['stock_available' => true])));
     }
 
     public function testReturnsFalseWhenStockNotAvailable(): void
     {
         $condition = new StockAvailableCondition();
-        $this->assertFalse($condition->check(['stock_available' => false]));
+        $this->assertFalse($condition->check($this->context(['stock_available' => false])));
     }
 
     public function testReturnsFalseWhenStockKeyMissing(): void
     {
         $condition = new StockAvailableCondition();
-        $this->assertFalse($condition->check([]));
+        $this->assertFalse($condition->check($this->context([])));
+    }
+
+    /** @param array<mixed> $data */
+    private function context(array $data): TransitionContext
+    {
+        return new TransitionContext('order', 'confirmed', 'cancel', 'cancelled', $data, null);
     }
 }
