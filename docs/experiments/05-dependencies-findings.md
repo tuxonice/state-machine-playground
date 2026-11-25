@@ -11,7 +11,7 @@ Verdict: **adopt with a thin wrapper.** Dependency injection through a PSR-11 co
 
 A later library change replaced the data array with a `TransitionContext` (machine name, source, event, target, data and subject) in `ConditionInterface::check()` and `CommandInterface::run()`. Re-running D2 now shows the guard and the command receiving the subject (`Order S-1`). The subject is null with `apply()`, `can()` and `run()`, which work on a bare state. D5 still records `P-1` for order `P-2`, because `NotifyCommand` still reads the id from `$data`; reading `$context->subject` instead closes that gap, which covers most of "What we would have to add" item 1 (the actor still travels in `$data`).
 
-The available-events listings still ignore guards.
+A later library change added `allowedEvents()`, `allowedEventsFor()`, `allowedManualEvents()` and `allowedManualEventsFor()`, which evaluate guards with the given data and subject. Re-running D3 with `allowedManualEventsFor()` gives `ship` for the clerk and `ship,refund` for the manager, the same as the `canApplyTo()` loop, which covers "What we would have to add" item 3. The `available*` listings still ignore guards. The playground's web UI and CLI keep using `availableManualEvents()`, because the `payment_success` guard needs a payment method the user only enters when clicking.
 
 ## Setup
 

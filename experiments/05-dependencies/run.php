@@ -296,6 +296,8 @@ namespace {
     $filtered = fn(array $d) => implode(',', array_filter($perm->availableManualEventsFor($o2), fn($e) => $perm->canApplyTo($o2, $e, $d)));
     show('manual events filtered with canApplyTo, clerk', $filtered($clerk));
     show('manual events filtered with canApplyTo, manager', $filtered($manager));
+    show('allowedManualEventsFor, clerk', implode(',', $perm->allowedManualEventsFor($o2, $clerk)));
+    show('allowedManualEventsFor, manager', implode(',', $perm->allowedManualEventsFor($o2, $manager)));
     $blockedListener = new Listener();
     $res = runnerFor(definition(), $container, $blockedListener)->applyTo($o2, 'refund', $clerk);
     $blocked = array_values(array_filter($blockedListener->events, fn($e) => $e instanceof TransitionBlocked));

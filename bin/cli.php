@@ -30,6 +30,7 @@ echo "\033[90mOrder: {$order->getId()} (using StatefulInterface + PSR-14 events)
 
 while (true) {
     $currentState = $order->getState() ?? $runner->getStateMachine()->getCurrentState() ?? 'new';
+    // Not allowedManualEvents(): some guards need data entered after choosing the event (see public/index.php).
     $events = $runner->availableManualEvents($currentState);
 
     echo "\033[32mCurrent state: \033[1m{$currentState}\033[0m\n\n";

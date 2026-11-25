@@ -208,6 +208,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $order) {
 }
 
 $allOrders = $storage->listOrders();
+// Not allowedManualEvents(): some guards (payment_success) need data the user only enters when clicking,
+// so evaluating them here would hide the button. A blocked event is reported after the click instead.
 $availableEvents = ($currentState) ? $runner->availableManualEvents($currentState) : [];
 $history = $selectedOrderId ? $storage->getTransitions($selectedOrderId) : [];
 $eventLog = $_SESSION['event_log'] ?? [];
