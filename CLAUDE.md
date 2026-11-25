@@ -29,7 +29,7 @@ make clean                                # removes containers and data/
 - **Persistence (`src/Storage`)**: `SqliteStateStorage` (per-machine state + transition history, scoped by machine name) and `SqliteTimeoutScheduler` (pending timeouts; "simulate time" fires due ones via `processTimeouts()`; implements `AcknowledgingTimeoutScheduler`: claims with a lease, deletes on acknowledge, stops claiming after `maxAttempts`, migrates older tables on construction). The web UI stores both in `data/orders.sqlite` (gitignored, created on demand, bind-mounted from the host).
 - **Events**: `OrderEventDispatcher` forwards PSR-14 `BeforeTransition`/`AfterTransition`/`TransitionBlocked` to `TransitionLogger` (audit log) and `NotificationSimulator`. The web UI log panels are session-scoped; history is in SQLite.
 - **`public/index.php`** is the whole web UI (routing, handlers, HTML, Mermaid rendering) in one file; selected config/order are kept in `$_SESSION`. `bin/cli.php` is the equivalent terminal demo.
-- **Tests**: `tests/Unit` for individual classes, `tests/Integration` for end-to-end flows per scenario (happy path, cancellation, timeouts, onEnter, returns, SQLite). Design notes/plan live in `docs/superpowers/plans/`.
+- **Tests**: `tests/Unit` for individual classes, `tests/Integration` for end-to-end flows per scenario (happy path, cancellation, timeouts, onEnter, returns, SQLite). `DefinitionClassesTest` calls the library's `validateClasses()` on every `config/*-state-machine.json`, so a guard or command class that doesn't resolve fails the suite. Design notes/plan live in `docs/superpowers/plans/`.
 
 ## Rules
 
