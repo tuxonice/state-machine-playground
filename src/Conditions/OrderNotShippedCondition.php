@@ -18,12 +18,11 @@ class OrderNotShippedCondition implements ConditionInterface
         'refunded',
     ];
 
+    /**
+     * Decides by the state the transition leaves, which the runner fills in, not by anything the caller passes.
+     */
     public function check(TransitionContext $context): bool
     {
-        if (!isset($context->data['current_state'])) {
-            return true;
-        }
-
-        return !in_array($context->data['current_state'], self::POST_SHIP_STATES, true);
+        return !in_array($context->source, self::POST_SHIP_STATES, true);
     }
 }

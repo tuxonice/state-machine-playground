@@ -66,12 +66,10 @@ class EntityAndEventsTest extends TestCase
 
         $order = new Order('ORD-003');
         $runner->applyTo($order, 'place_order');
-        $runner->applyTo($order, 'payment_success', ['payment_method' => 'paypal']);
-        $this->assertSame('confirmed', $order->getState());
 
-        $result = $runner->applyTo($order, 'cancel', ['current_state' => 'shipped']);
+        $result = $runner->applyTo($order, 'payment_success'); // no payment method: the guard blocks it
         $this->assertFalse($result->hasMoved());
-        $this->assertSame('confirmed', $order->getState());
+        $this->assertSame('pending_payment', $order->getState());
 
         $blocked = array_filter($logger->getEntries(), fn($e) => $e['type'] === 'transition_blocked');
         $this->assertCount(1, $blocked);

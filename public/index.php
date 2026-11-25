@@ -167,7 +167,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $order) {
         if (isset($_POST['stock_available'])) {
             $data['stock_available'] = true;
         }
-        $data['current_state'] = $order->getState();
 
         try {
             $from = $order->getState();

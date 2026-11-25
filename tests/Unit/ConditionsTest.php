@@ -11,24 +11,25 @@ use Tlab\StateMachine\TransitionContext;
 
 class ConditionsTest extends TestCase
 {
-    public function testOrderNotShippedReturnsTrueForPreShipStates(): void
+    public function testOrderNotShippedPassesForPreShipStates(): void
     {
         $condition = new OrderNotShippedCondition();
-        $this->assertTrue($condition->check($this->context(['current_state' => 'confirmed'])));
-        $this->assertTrue($condition->check($this->context(['current_state' => 'processing'])));
+        $this->assertTrue($condition->check($this->from('confirmed')));
+        $this->assertTrue($condition->check($this->from('processing')));
     }
 
-    public function testOrderNotShippedReturnsFalseForPostShipStates(): void
+    public function testOrderNotShippedFailsForPostShipStates(): void
     {
         $condition = new OrderNotShippedCondition();
-        $this->assertFalse($condition->check($this->context(['current_state' => 'shipped'])));
-        $this->assertFalse($condition->check($this->context(['current_state' => 'delivered'])));
+        $this->assertFalse($condition->check($this->from('shipped')));
+        $this->assertFalse($condition->check($this->from('delivered')));
     }
 
-    public function testOrderNotShippedReturnsTrueWhenNoStateInData(): void
+    public function testOrderNotShippedTrustsTheTransitionNotTheCallersData(): void
     {
         $condition = new OrderNotShippedCondition();
-        $this->assertTrue($condition->check($this->context([])));
+        $this->assertTrue($condition->check($this->from('confirmed', ['current_state' => 'shipped'])));
+        $this->assertFalse($condition->check($this->from('shipped', ['current_state' => 'confirmed'])));
     }
 
     public function testHasPaymentDataReturnsTrueWithPaymentMethod(): void
@@ -42,6 +43,12 @@ class ConditionsTest extends TestCase
         $condition = new HasPaymentDataCondition();
         $this->assertFalse($condition->check($this->context([])));
         $this->assertFalse($condition->check($this->context(['payment_method' => ''])));
+    }
+
+    /** @param array<mixed> $data */
+    private function from(string $source, array $data = []): TransitionContext
+    {
+        return new TransitionContext('order', $source, 'cancel', 'cancelled', $data, null);
     }
 
     /** @param array<mixed> $data */

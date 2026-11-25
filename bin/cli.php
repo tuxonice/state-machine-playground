@@ -135,10 +135,6 @@ while (true) {
         $data['stock_available'] = strtolower(trim((string) $stock)) !== 'n';
     }
 
-    if ($event === 'cancel') {
-        $data['current_state'] = $currentState;
-    }
-
     $result = $runner->applyTo($order, $event, $data);
 
     echo "\n";

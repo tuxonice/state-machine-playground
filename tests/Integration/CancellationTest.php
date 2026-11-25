@@ -12,7 +12,7 @@ class CancellationTest extends TestCase
     public function testCancelFromConfirmed(): void
     {
         $runner = Bootstrap::createRunner();
-        $result = $runner->apply('confirmed', 'cancel', ['current_state' => 'confirmed']);
+        $result = $runner->apply('confirmed', 'cancel');
         $this->assertTrue($result->hasMoved());
         $this->assertSame('cancelled', $result->getState());
     }
