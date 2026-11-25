@@ -16,7 +16,7 @@ use Tlab\StateMachine\Reader\DefinitionReader;
  * Static checks for a state machine definition, one rule per finding from experiments 2 to 6.
  *
  *  R1 schema/validation   R2 guard/command resolvable   R3 one class name per condition
- *  R4 self-loop on a state with timeouts (timers restart)   R5 onEnter cycle (side effects repeat)
+ *  R4 self-loop without keepTimeouts on a state with timeouts (timers restart)   R5 onEnter cycle (side effects repeat)
  *  R6 shadowed transition (after an unconditional one)   R7 guard on a timeout event (dropped, not retried)
  *  R8 unreachable state   R9 event not used / not defined
  */
@@ -102,8 +102,9 @@ final class DefinitionChecker
                 continue;
             }
             foreach ($m->getTransitions() as $t) {
-                if ($t->getSource() === $name && $t->getTarget() === $name) {
-                    $out[] = $this->f('R4', 'error', "state '{$name}' has timeouts and a self-loop ('{$t->getEvent()}'): every move restarts all its timers, so the other timeouts may never fire");
+                // A self-loop flagged keepTimeouts leaves the running timers alone, so it is safe.
+                if ($t->getSource() === $name && $t->getTarget() === $name && !$t->keepsTimeouts()) {
+                    $out[] = $this->f('R4', 'error', "state '{$name}' has timeouts and a self-loop ('{$t->getEvent()}'): every move restarts all its timers, so the other timeouts may never fire; flag it keepTimeouts if it should not");
                 }
             }
             foreach ($m->getTimeoutEvents($name) as $e) {

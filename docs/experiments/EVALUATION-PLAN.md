@@ -110,10 +110,13 @@ Not tested: Eloquent and Laravel specifics, and real database latency under load
 
 ## Fixed since the experiments
 
-The findings describe the code as it was when each experiment ran. Two changes have landed since, so re-running experiments 2, 3 and 7 now gives different results:
+The findings describe the code as it was when each experiment ran. Several changes have landed since, so re-running experiments 2, 3, 5 and 7 now gives different results, and experiment 6 has new options:
 
 - **Library, [tuxonice/state-machine#8](https://github.com/tuxonice/state-machine/pull/8):** timeouts are scheduled right after each state is stored, before `AfterTransition`. `processTimeouts()` keeps going past a failing timeout and reports all failures in a `TimeoutProcessingException`. The optional `AcknowledgingTimeoutScheduler` (`claimDue()`, `acknowledge()`) keeps a timeout until it has been dealt with.
 - **Playground, `SqliteTimeoutScheduler`:** implements `AcknowledgingTimeoutScheduler` with a lease (60 s), batches (100), dead-lettering after 3 attempts, and indexes on `order_id` and `due_at`.
+- **Library, [tuxonice/state-machine#9](https://github.com/tuxonice/state-machine/pull/9):** a guard or command that needs constructor arguments and is not in the container fails with a clear `ResolutionException`. `validateClasses()` checks every class a definition names, up front. The playground's `DefinitionClassesTest` runs it on every definition.
+- **Library, PSR-20 clock:** the runner takes an optional `ClockInterface`, so timers can be tested without a decorator.
+- **Library, `keepTimeouts`:** a self-transition flagged `"keepTimeouts": true` keeps the state's running timeouts, which avoids experiment 6's reminder trap. The playground's definition checker (R4) accepts it.
 
 Each affected findings note starts with a "Fixed since" section that lists what changed. Item 2 of the verdict above is now covered by the library plus the playground scheduler. Still open from the same experiments: experiment 1's race (the per-order lock), experiment 2's side effects before commit, and the guard on a timeout event that drops it (experiment 3, T5).
 

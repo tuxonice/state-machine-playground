@@ -2,6 +2,15 @@
 
 Verdict: **adopt, with known limits.** The library is a plain flat state machine: one state per subject, static targets, one guard per transition. Our order and lead flows fit it. Everything else that real workflows need can be built around it, but each workaround is code and convention we own. One of them hides a trap: a reminder written as a self-loop silently stops the cancel timeout from ever firing.
 
+## Fixed since
+
+Two library changes (in `tuxonice/state-machine` `main`, commits `7fc2ff9` and `8b32615`) address findings here:
+
+- **The reminder trap (X4a) can now be avoided.** A self-transition flagged `"keepTimeouts": true` leaves the state's running timeouts alone, so a reminder no longer pushes the cancel away. The flag is only allowed on a self-transition. The default is unchanged, and this experiment does not use the flag, so re-running X4 still shows the trap. The playground's definition checker (rule R4 in `experiments/08-integration/`) accepts a self-loop flagged `keepTimeouts`.
+- **The runner takes a clock.** `StateMachineRunner` accepts an optional PSR-20 `ClockInterface`, so the `SimClockScheduler` decorator used here is no longer needed for timer tests ("What we would have to add" item 1).
+
+The other limits are unchanged: no wildcard or list sources, one guard per transition, no sub-states or parallel tracks, timers measured from entering a state.
+
 ## Setup
 
 `experiments/06-expressiveness/run.php`. Each probe feeds a definition to `DefinitionReader` and the runner and records what is accepted, what is rejected, and what happens at run time. For timers I used a decorator scheduler that maps the runner's system-clock deadlines onto a simulated clock, because the runner has no clock to inject.

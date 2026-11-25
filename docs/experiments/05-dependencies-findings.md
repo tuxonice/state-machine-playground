@@ -2,6 +2,15 @@
 
 Verdict: **adopt with a thin wrapper.** Dependency injection through a PSR-11 container works, and guards can make real decisions (permissions, service calls, branching). The gaps are about what a guard or command is given: only an `array $data` that the caller builds, never the subject. That needs a small convention enforced in one place.
 
+## Fixed since
+
+[tuxonice/state-machine#9](https://github.com/tuxonice/state-machine/pull/9) changed two D1 results. Re-running this experiment afterwards:
+
+- A guard whose constructor needs a service that is not in the container now fails with `ResolutionException: Class '…' needs constructor arguments; register it in the container`, instead of a raw `ArgumentCountError`.
+- A missing class or a wrong type still loads without complaint and fails on first use. `StateMachineRunner::validateClasses()` now finds all three cases up front, without evaluating or running anything. The playground's `DefinitionClassesTest` calls it on every `config/*-state-machine.json`, which covers "What we would have to add" item 2.
+
+Everything else here is unchanged: guards and commands still get only `$data`, and the available-events listings still ignore guards.
+
 ## Setup
 
 `experiments/05-dependencies/run.php`. A small machine with guards backed by services (`InStock` calls a stock service, `LowRisk` a fraud service), a permission guard (`IsManager`), a command with an injected mailer (`NotifyCommand`), and an `onEnter` event. Services are wired through a minimal PSR-11 container passed to `ConditionResolver` and `CommandResolver`.
